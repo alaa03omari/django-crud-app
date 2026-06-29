@@ -75,15 +75,6 @@ WSGI_APPLICATION = 'crudproject.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
-<<<<<<< HEAD
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "django_db",
-        "USER": "django_user",
-        "PASSWORD": "django_pass",
-        "HOST": "db",
-        "PORT": "3306",
-=======
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': os.environ.get('DB_NAME', 'cruddb'),
@@ -91,7 +82,6 @@ DATABASES = {
         'PASSWORD': os.environ.get('DB_PASSWORD'),
         'HOST': os.environ.get('DB_HOST'),
         'PORT': os.environ.get('DB_PORT', '3306'),
->>>>>>> c588b25e8e93f41fb3a9d9a3687185eed7c3e227
     }
 }
 
