@@ -1,0 +1,24 @@
+services:
+  web:
+    build: .
+    ports:
+    - "8000:8000"
+    volumes:
+      - .:/django-app
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: django_db
+      MYSQL_USER: django_user
+      MYSQL_PASSWORD: django_pass
+      MYSQL_ROOT_PASSWORD: root_pass
+    ports:
+      - "3306:3306"  
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
