@@ -25,27 +25,24 @@ jobs:
       - name: Deploy to private EC2 through Bastion
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.BASTION_HOST }}
+          host: ${{ secrets.APP_PRIVATE_IP }}
           username: ubuntu
           key: ${{ secrets.BASTION_KEY }}
+
+          proxy_host: ${{ secrets.BASTION_HOST }}
+          proxy_username: ubuntu
+          proxy_key: ${{ secrets.BASTION_KEY }}
+
           script_stop: true
           script: |
-            printf '%s\n' "${{ secrets.BASTION_KEY }}" > /tmp/bh-key.pem
-            chmod 600 /tmp/bh-key.pem
-
-            ssh -i /tmp/bh-key.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.APP_PRIVATE_IP }} "
-              set -e
-              echo '${{ secrets.DOCKER_PASSWORD }}' | sudo docker login -u '${{ secrets.DOCKER_USERNAME }}' --password-stdin
-              sudo docker pull ${{ secrets.DOCKER_USERNAME }}/django-crud-app:latest
-              sudo docker stop django-app || true
-              sudo docker rm django-app || true
-              sudo docker run -d --name django-app -p 8000:8000 \
-                -e DB_NAME='${{ secrets.DB_NAME }}' \
-                -e DB_USER='${{ secrets.DB_USER }}' \
-                -e DB_PASSWORD='${{ secrets.DB_PASSWORD }}' \
-                -e DB_HOST='${{ secrets.DB_HOST }}' \
-                -e DB_PORT='${{ secrets.DB_PORT }}' \
-                ${{ secrets.DOCKER_USERNAME }}/django-crud-app:latest
-            "
-
-            rm -f /tmp/bh-key.pem
+            echo '${{ secrets.DOCKER_PASSWORD }}' | sudo docker login -u '${{ secrets.DOCKER_USERNAME }}' --password-stdin
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/django-crud-app:latest
+            sudo docker stop django-app || true
+            sudo docker rm django-app || true
+            sudo docker run -d --name django-app -p 8000:8000 \
+              -e DB_NAME='${{ secrets.DB_NAME }}' \
+              -e DB_USER='${{ secrets.DB_USER }}' \
+              -e DB_PASSWORD='${{ secrets.DB_PASSWORD }}' \
+              -e DB_HOST='${{ secrets.DB_HOST }}' \
+              -e DB_PORT='${{ secrets.DB_PORT }}' \
+              ${{ secrets.DOCKER_USERNAME }}/django-crud-app:latest
