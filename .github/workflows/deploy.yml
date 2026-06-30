@@ -21,6 +21,8 @@ jobs:
         with:
           context: .
           push: true
+          no-cache: true
+
           tags: ${{ secrets.DOCKER_USERNAME }}/django-crud-app:latest
       - name: Deploy to private EC2 through Bastion
         uses: appleboy/ssh-action@v1.0.3
@@ -37,8 +39,7 @@ jobs:
 
                sudo docker pull ${{ secrets.DOCKER_USERNAME }}/django-crud-app:latest
 
-               sudo docker stop django-app || true
-               sudo docker rm django-app || true
+               sudo docker rm -f django-app || true
 
                sudo docker run -d \
                  --name django-app \
