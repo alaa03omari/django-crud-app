@@ -37,15 +37,14 @@ jobs:
           key: ${{ secrets.BASTION_KEY }}
           script_stop: true
           script: |
-            cat > /tmp/app-key.pem << 'EOF'
-            ${{ secrets.APP_PRIVATE_KEY }}
-            EOF
+            printf "%s\n" "${{ secrets.APP_PRIVATE_KEY }}" > /tmp/app-key.pem
             chmod 600 /tmp/app-key.pem
 
             ssh -i /tmp/app-key.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.APP_PRIVATE_IP }} "
               set -e
 
               sudo docker pull ${{ secrets.DOCKER_USERNAME }}/django-crud-app:${{ github.sha }}
+
               sudo docker rm -f django-app || true
 
               sudo docker run -d \
